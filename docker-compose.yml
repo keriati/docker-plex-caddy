@@ -1,0 +1,62 @@
+version: "2.1"
+
+volumes:
+  caddy_data: {}
+
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Vienna
+      - PLEX_CLAIM=${PLEX_CLAIM}
+      - ADVERTISE_IP=${PLEX_ADVERTISE_IP}
+    expose:
+      - 32400
+    ports:
+#      - "32400:32400/tcp"
+      - "3005:3005/tcp"
+      - "8324:8324/tcp"
+      - "32469:32469/tcp"
+      - "1900:1900/udp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+    volumes:
+      - ${APP_DIR}/config:/config
+      - ${APP_DIR}/transcode:/transcode
+      - ${PLEX_DATA_DIR}:/data
+      - ${PLEX_DATA_DIR_2}:/data2
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vienna
+    volumes:
+      - ${APP_DIR}/tautulli:/config
+    expose:
+      - 8181
+    restart: unless-stopped
+
+  caddy:
+    image: slothcroissant/caddy-cloudflaredns:2.6.1
+    container_name: plex-caddy
+    ports:
+      - "32400:32400"
+      - "8181:8181"
+    volumes:
+      - ${APP_DIR}/caddy:/etc/caddy
+      - caddy_data:/data
+    environment:
+      - TZ=Europe/Vienna
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+      - PLEX_DOMAIN=${PLEX_DOMAIN}
+      - TAUTULLI_DOMAIN=${TAUTULLI_DOMAIN}
+      - ACME_AGREE=true
+    restart: unless-stopped

@@ -1,0 +1,12 @@
+{$PLEX_DOMAIN}:32400 {
+    tls {$CLOUDFLARE_EMAIL} {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+    }
+    reverse_proxy plex:32400
+}
+{$TAUTULLI_DOMAIN}:8181 {
+    tls {$CLOUDFLARE_EMAIL} {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+    }
+    reverse_proxy tautulli:8181
+}
