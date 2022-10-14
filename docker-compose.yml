@@ -37,12 +37,11 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Vienna
+      - HTTP_PROXY=1
     volumes:
       - ${APP_DIR}/tautulli:/config
     expose:
       - 8181
-#    ports:
-#      - "8181:8181/tcp"
     restart: unless-stopped
 
   caddy:
