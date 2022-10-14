@@ -39,16 +39,18 @@ services:
       - TZ=Europe/Vienna
     volumes:
       - ${APP_DIR}/tautulli:/config
-    expose:
-      - 8181
+#    expose:
+#      - 8181
+    ports:
+      - "8181:8181/tcp"
     restart: unless-stopped
 
   caddy:
     image: slothcroissant/caddy-cloudflaredns:2.6.1
     container_name: plex-caddy
-    ports:
+#    ports:
 #      - "32400:32400"
-      - "8181:8181"
+#      - "8181:8181"
     volumes:
       - ${APP_DIR}/caddy:/etc/caddy
       - caddy_data:/data
